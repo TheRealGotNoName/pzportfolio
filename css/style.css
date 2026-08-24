@@ -1,0 +1,573 @@
+/* ============================================================
+   Token system
+   ============================================================ */
+:root {
+  --bg: #344e41;
+  --bg-grid: #ffffff08;
+  --panel: rgba(58, 90, 64, 0.45);
+  --panel-border: rgba(218, 215, 205, 0.16);
+  --text: #dad7cd;
+  --muted: #b7c4ae;
+  --accent: #a3b18a;       /* sage — primary accent */
+  --accent-dim: #588157;
+  --sage: #a3b18a;         /* secondary accent */
+  --sage-dim: #588157;
+  --danger: #bc6c4a;
+
+  --popup-bg: #a3b18a;
+
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+/* the homepage doesn't use real page scrolling — see .slide below —
+   so no scroll-behavior/scroll-snap is needed on html */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+h1, h2, h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.5em;
+}
+
+p { margin: 0 0 1em; color: var(--text); }
+p.muted, .muted { color: var(--muted); }
+
+.wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   Reference-designator eyebrow labels (signature element)
+   e.g. "U1 — ABOUT"  |  mimics PCB silkscreen part labels
+   ============================================================ */
+.designator {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  backdrop-filter: blur(6px);
+  padding: 3px 8px;
+  border-radius: 3px;
+  margin-bottom: 14px;
+}
+
+/* ============================================================
+   Nav
+   ============================================================ */
+header.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(58, 90, 64, 0.85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--panel-border);
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.nav .logo {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text);
+}
+.nav .logo span { color: var(--accent); }
+
+.nav ul {
+  list-style: none;
+  display: flex;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.nav a {
+  font-family: var(--sans);
+  font-weight: 400;
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  padding: 4px 0;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.nav a:hover,
+.nav a[aria-current="page"] {
+  color: var(--text);
+  text-decoration: none;
+  background: none;
+  border-bottom-color: var(--accent-dim);
+}
+
+/* ============================================================
+   Homepage slides — each is a fixed, full-screen panel; only one
+   is visible at rest. js/script.js crossfades (fade + slide) between
+   them on wheel/touch/keyboard input instead of real page scrolling.
+   ============================================================ */
+.slide {
+  position: fixed;
+  top: 65px; /* below the fixed site nav */
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  overflow-y: auto;
+  transition: opacity 800ms ease, transform 800ms ease;
+}
+.slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.hero-name {
+  text-align: center;
+}
+
+.name-title {
+  font-size: clamp(2.75rem, 9vw, 5.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin: 0;
+}
+
+.name-subtitle {
+  font-family: var(--mono);
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 16px 0 0;
+}
+
+.scroll-cue {
+  display: inline-block;
+  margin-top: 64px;
+  color: var(--muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  animation: bob 1.8s ease-in-out infinite;
+}
+.scroll-cue:hover { color: var(--text); text-decoration: none; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   Scroll reveal
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* each project card triggers its own reveal as it individually scrolls
+   into view; the nth-child delay staggers cards that cross the
+   threshold together (e.g. side-by-side in a grid row) */
+.project-grid .reveal:nth-child(1) { transition-delay: 0ms; }
+.project-grid .reveal:nth-child(2) { transition-delay: 100ms; }
+.project-grid .reveal:nth-child(3) { transition-delay: 200ms; }
+.project-grid .reveal:nth-child(4) { transition-delay: 300ms; }
+
+/* ============================================================
+   Buttons
+   ============================================================ */
+.btn {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.03em;
+  padding: 10px 18px;
+  border-radius: 4px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  cursor: pointer;
+  display: inline-block;
+}
+.btn:hover { background: rgba(163, 177, 138, 0.16); text-decoration: none; }
+.btn.filled { background: var(--accent); color: #1e2c22; }
+.btn.filled:hover { background: var(--accent-dim); }
+
+/* ============================================================
+   Sections & cards
+   ============================================================ */
+section { padding: 64px 0; }
+section + section { border-top: 1px solid var(--panel-border); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  position: relative;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 24px;
+}
+
+/* corner "test point" ticks, echoing PCB fabrication marks */
+.card::before, .card::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1px solid var(--accent);
+}
+.card::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+.card::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+.card h3 { color: var(--text); font-size: 1.1rem; }
+.card .stack {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--sage);
+  letter-spacing: 0.03em;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.card ul {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.card ul li { margin-bottom: 4px; }
+
+.card .links {
+  margin-top: 16px;
+  display: flex;
+  gap: 14px;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   Selected-projects preview cards (homepage)
+   ============================================================ */
+.project-card {
+  display: block;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: transform 0.18s ease, border-color 0.18s ease;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-dim);
+  text-decoration: none;
+}
+
+.project-thumb {
+  aspect-ratio: 4 / 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(163, 177, 138, 0.16), rgba(88, 129, 87, 0.1));
+  border-bottom: 1px solid var(--panel-border);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.project-card h3 {
+  color: var(--text);
+  font-size: 1.05rem;
+  padding: 16px 16px 0;
+  margin-bottom: 6px;
+}
+
+.project-card p {
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 0 16px 20px;
+  margin: 0;
+}
+
+/* Persistent "Selected Projects" label, shown (not crossfaded) while
+   any of the three project slides is active or incoming, so it stays
+   put in the same spot instead of re-animating between projects */
+.projects-sticky-header {
+  position: fixed;
+  top: 65px; /* sits just under the fixed site nav */
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background: var(--bg);
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--panel-border);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 300ms ease;
+}
+.projects-sticky-header.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+.projects-sticky-header h2 { margin: 0; }
+
+.project-card--feature {
+  max-width: 640px;
+  margin: 0 auto;
+}
+.project-card--feature .project-thumb {
+  aspect-ratio: 21 / 9;
+}
+.project-card--feature h3 {
+  font-size: 1.3rem;
+  padding-top: 20px;
+}
+.project-card--feature p {
+  font-size: 0.98rem;
+  padding-bottom: 24px;
+}
+
+/* ============================================================
+   Resume page
+   ============================================================ */
+.resume-block { margin-bottom: 36px; }
+.resume-block h3 { color: var(--text); }
+.resume-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--panel-border);
+  padding: 14px 0;
+}
+.resume-row .role { font-weight: 600; color: var(--text); }
+.resume-row .meta {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* ============================================================
+   Contact page
+   ============================================================ */
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+}
+@media (max-width: 680px) { .contact-grid { grid-template-columns: 1fr; } }
+
+.field { margin-bottom: 18px; }
+.field label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input, .field textarea {
+  width: 100%;
+  background: var(--panel);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  padding: 10px 12px;
+}
+.field textarea { min-height: 120px; resize: vertical; }
+
+.contact-links { list-style: none; padding: 0; margin: 0; }
+.contact-links li {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--panel-border);
+}
+.contact-links .label {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  width: 90px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Contact page — icon trigger + modal
+   ============================================================ */
+.contact-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 40px;
+  padding-bottom: 96px;
+  text-align: center;
+}
+
+.contact-title {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--text);
+  margin: 0;
+}
+
+.mail-icon-btn {
+  width: 88px;
+  height: 88px;
+  border-radius: 18px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dim) 55%, var(--sage));
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 14px 30px -8px rgba(88, 129, 87, 0.5);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.mail-icon-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.2), 0 18px 34px -8px rgba(88, 129, 87, 0.6);
+}
+.mail-icon-btn:active { transform: translateY(0) scale(0.98); }
+
+.contact-links-secondary { max-width: 360px; width: 100%; }
+
+.email-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(8, 10, 9, 0.6);
+  backdrop-filter: blur(3px);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  padding: 24px;
+}
+.email-overlay.is-open { opacity: 1; }
+.email-overlay[hidden] { display: none; }
+
+.email-modal {
+  width: 100%;
+  max-width: 380px;
+  border-radius: 18px;
+  padding: 32px 28px;
+  background: var(--popup-bg);
+  border: 1px solid rgba(42, 54, 59, 0.15);
+  box-shadow: 0 24px 60px -12px rgba(0,0,0,0.5);
+  transform: translateY(8px) scale(0.98);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+}
+.email-overlay.is-open .email-modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.email-row { padding: 14px 0; }
+.email-row + .email-row { border-top: 1px solid rgba(42, 54, 59, 0.2); }
+
+.email-label {
+  display: block;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.01em;
+  color: #24312d;
+  margin-bottom: 6px;
+}
+
+.email-row a {
+  font-size: 1rem;
+  color: #1c2624;
+  word-break: break-word;
+}
+.email-row a:hover { color: #0d1210; }
+
+@media (prefers-reduced-motion: reduce) {
+  .email-overlay, .email-modal { transition: none; }
+}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+footer {
+  border-top: 1px solid var(--panel-border);
+  padding: 32px 0;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  text-align: center;
+}

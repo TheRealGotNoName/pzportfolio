@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Peter Zhong</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="logo" href="index.html">PZ<span>.</span></a>
+    <ul>
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="personal-projects.html">PERSONAL</a></li>
+      <li><a href="school-projects.html">SCHOOL</a></li>
+      <li><a href="resume.html">RESUME</a></li>
+      <li><a href="contact.html" aria-current="page">CONTACT</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap contact-center" style="padding-top:80px;">
+    <h1 class="contact-title">CONTACT</h1>
+    <button id="mail-trigger" class="mail-icon-btn" type="button" aria-haspopup="dialog" aria-controls="email-modal" aria-label="Show email addresses">
+      <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="2.5" y="5" width="19" height="14" rx="2.4"/>
+        <path d="M3.2 6.2 12 13 20.8 6.2"/>
+      </svg>
+    </button>
+  </section>
+
+  <div id="email-overlay" class="email-overlay" hidden>
+    <div id="email-modal" class="email-modal" role="dialog" aria-modal="true" aria-label="Email addresses">
+      <div class="email-row">
+        <span class="email-label">School Email</span>
+        <a href="mailto:pezh6955@colorado.edu">pezh6955@colorado.edu</a>
+      </div>
+      <div class="email-row">
+        <span class="email-label">Personal Email</span>
+        <a href="mailto:petzhong1@gmail.com">petzhong1@gmail.com</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="js/script.js"></script>
+</body>
+</html>
